@@ -48,7 +48,20 @@ class ChatMessage(Resource):
                 })
             return messages
 
-        messages = execute('SELECT * FROM message ORDER BY ts desc', result_mapper=message_result_mapper)
+        parser = reqparse.RequestParser()
+        parser.add_argument('last_timestamp', type=int)
+        args = parser.parse_args()
+
+        last_timestamp = args['last_timestamp']
+
+        if not last_timestamp:
+            last_timestamp = 0
+
+        messages = execute(
+            'SELECT * FROM message WHERE ts > ? ORDER BY ts desc',
+            parameters=(last_timestamp,),
+            result_mapper=message_result_mapper,
+        )
 
         return {'messages': messages}
 
