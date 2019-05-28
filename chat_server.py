@@ -1,4 +1,5 @@
 import datetime
+import os
 import sqlite3
 
 from flask import Flask
@@ -8,24 +9,48 @@ from flask_restful import reqparse
 app = Flask(__name__)
 api = Api(app)
 
-conn = sqlite3.connect('chat.db')
+filename = './chat.db'
+try:
+    os.remove(filename)
+except OSError:
+    pass
 
-c = conn.cursor()
-c.execute('CREATE TABLE message(nickname text, message text, timestamp real)')
-c.commit()
+
+def execute(query, parameters=(), result_mapper=None):
+    result = None
+
+    conn = sqlite3.connect(filename)
+    c = conn.cursor()
+    c.execute(query, parameters)
+    conn.commit()
+
+    if result_mapper:
+        result = result_mapper(c)
+
+    conn.close()
+
+    return result
+
+
+execute('CREATE TABLE message(id integer primary key autoincrement, nickname text, msg text, ts integer)')
 
 
 class ChatMessage(Resource):
     def get(self):
-        return {
-            'messages': [
-                {'nickname': 'tester1', 'message': 'test1', 'timestamp': int(datetime.datetime.now().timestamp())},
-                {'nickname': 'tester2', 'message': 'test2', 'timestamp': int(datetime.datetime.now().timestamp())},
-                {'nickname': 'tester1', 'message': 'test3', 'timestamp': int(datetime.datetime.now().timestamp())},
-                {'nickname': 'tester2', 'message': 'test4', 'timestamp': int(datetime.datetime.now().timestamp())},
-                {'nickname': 'tester1', 'message': 'test5', 'timestamp': int(datetime.datetime.now().timestamp())},
-            ]
-        }
+        def message_result_mapper(c):
+            messages = []
+            for row in c:
+                messages.append({
+                    'id': row[0],
+                    'nickname': row[1],
+                    'message': row[2],
+                    'timestamp': row[3],
+                })
+            return messages
+
+        messages = execute('SELECT * FROM message ORDER BY ts desc', result_mapper=message_result_mapper)
+
+        return {'messages': messages}
 
     def post(self):
         try:
@@ -34,9 +59,10 @@ class ChatMessage(Resource):
             parser.add_argument('message', type=str)
             args = parser.parse_args()
 
-            c = conn.cursor()
-
-            c.execute('INSERT INTO ')
+            execute(
+                'INSERT INTO message(nickname, msg, ts) VALUES (?, ?, ?)',
+                parameters=(args['nickname'], args['message'], int(datetime.datetime.now().timestamp())),
+            )
 
             return {'nickname': args['nickname'], 'message': args['message']}
         except Exception as e:
@@ -47,4 +73,3 @@ api.add_resource(ChatMessage, '/chat')
 
 if __name__ == '__main__':
     app.run(debug=True)
-    conn.close()
