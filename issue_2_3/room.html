@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--<meta charset="utf-8">-->
+    <title>Chatting Room</title>
+    <link href="room.css" rel="stylesheet" type="text/css">
+    <script ascript" src="room.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script language="javascript">
+ 	    var request = new Request();
+      var param = request.getParameter("nick_name");
+    </script>
+  </head>
+  <body>
+  	<div id = "users">
+      <div id = "myName">sss</div>
+      <script language="javascript">
+         document.getElementById('myName').innerHTML = param;
+      </script>
+      <div id = "userList">사용자 목록</div>
+    </div>
+  	<div id = "chatting">
+  		<div id = "conversation">대화 내용</div>
+  		<div id = "myMessage">
+  		<textarea id = "message" cols = "200" rows = "5"></textarea>
+  		<button type="button" name="sending" onclick="pressed()"><strong>send</strong></button>
+  		</div>
+  	</div>
+  </body>
+</html>

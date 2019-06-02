@@ -1,0 +1,71 @@
+body {	
+	margin: 0 auto;
+	font-size: 100%;
+	font: sans-serif;
+}
+
+#users {
+	height: 99.9vh;
+	width : 20%;
+	background-color: #6E6E6E;
+	float: left;
+  color : white;
+  font-size : 25px;
+}
+
+#myName {
+	background-color: #4A4A4A;
+	height: 5%;
+	width : 80%;
+	margin : 5%;
+	color : white;
+	font-size : 30px;
+	text-align: center;
+	padding : 5%;
+}
+
+#userList {
+	margin : 5%;
+	width : 90%;
+}
+
+#chatting {
+	height: 99.9vh;
+	float: right;
+	width : 80%;
+	max-height: 99.9vh;
+}
+
+#conversation {
+	padding-left : 1%;
+	padding-right : 1%;
+  width : 98%;
+  height: 90vh;
+  background-color: #CDCDCD;
+  color : black;
+	font-size : 15px;
+}
+
+#myMessage {
+	width : 100%;
+	height: 9.9vh;
+	background-color: white;
+	float: left;
+}
+
+textarea {
+	float: left;
+  width : 90%;
+	border : 0px;
+	resize: none;
+}
+
+button {
+	margin-top : 0.5%;
+	margin-left : 3%;
+	width : 6%;
+	border: 2px solid #BDAA4D;
+	background-color: white;
+	color: #BDAA4D;
+	font-size : 20px;
+}
