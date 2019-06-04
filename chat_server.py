@@ -1,11 +1,11 @@
 import datetime
 import sqlite3
 
-from flask import Flask
+from flask import Flask, redirect
 from flask_restful import Resource, Api
 from flask_restful import reqparse
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='static')
 api = Api(app)
 
 conn = sqlite3.connect('chat.db')
@@ -44,6 +44,12 @@ class ChatMessage(Resource):
 
 
 api.add_resource(ChatMessage, '/chat')
+
+
+@app.route('/')
+def index():
+    return redirect("/index.html", code=302)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
