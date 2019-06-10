@@ -82,7 +82,40 @@ class ChatMessage(Resource):
             return {'error': str(e)}
 
 
+class User(Resource):
+    def get(self):
+        def user_result_mapper(c):
+            messages = []
+            for row in c:
+                messages.append({
+                    'nickname': row[0],
+                    'message_count': row[1],
+                })
+            return messages
+
+        parser = reqparse.RequestParser()
+        parser.add_argument('keyword', type=str)
+        args = parser.parse_args()
+
+        keyword = args['keyword']
+
+        if keyword:
+            users = execute(
+                "SELECT nickname, count(*) message_count FROM message WHERE nickname LIKE '%'||?||'%' GROUP BY nickname",
+                parameters=(keyword,),
+                result_mapper=user_result_mapper,
+            )
+        else:
+            users = execute(
+                "SELECT nickname, count(*) message_count FROM message GROUP BY nickname",
+                result_mapper=user_result_mapper,
+            )
+
+        return {'users': users}
+
+
 api.add_resource(ChatMessage, '/chat')
+api.add_resource(User, '/user')
 
 
 @app.route('/')
